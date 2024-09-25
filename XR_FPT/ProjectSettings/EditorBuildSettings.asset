@@ -8,7 +8,10 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/NRSDK/Demos/HelloMR.unity
     guid: dd74f1c9685ef48499229d4957b58000
-  - enabled: 1
+  - enabled: 0
     path: Assets/NRSDK/Demos/HandTracking.unity
     guid: 7d33c4a3bc8da9745acac0e1d62c44bf
+  - enabled: 1
+    path: Assets/05_Scenes/First scene.unity
+    guid: 775ae7d2e5a70234ea8cdc20f91ea0a5
   m_configObjects: {}
