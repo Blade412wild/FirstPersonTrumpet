@@ -1,10 +1,13 @@
 using UnityEngine;
 using SharpOSC;
+using System.Threading; // For threading
 
 public class OSCReceiver : MonoBehaviour
 {
     private UDPListener listener;
     public int port = 9000; // Listening port
+    private Thread listenerThread; // The background thread for listening
+    private bool isListening = false; // Flag to control thread execution
 
     void Start()
     {
@@ -18,27 +21,28 @@ public class OSCReceiver : MonoBehaviour
     // This method listens for incoming OSC messages
     private void StartListening()
     {
+        isListening = true; // Set the flag to true when starting
+
         // Run the listener on a new thread to avoid blocking the main Unity thread
-        new System.Threading.Thread(() =>
+        listenerThread = new Thread(() =>
         {
-            while (true)
+            while (isListening) // Continue while listening is true
             {
                 var packet = listener.Receive();
-                if (packet != null)
+                if (packet != null && packet is OscMessage message)
                 {
-                    if (packet is OscMessage message)
-                    {
-                        // Extract the OSC message data and handle it
-                        string address = message.Address;
-                        string receivedValue = message.Arguments[0].ToString();
-                        Debug.Log("OSC Message received. Address: " + address + ", Value: " + receivedValue);
+                    // Extract the OSC message data and handle it
+                    string address = message.Address;
+                    string receivedValue = message.Arguments[0].ToString();
+                    Debug.Log("OSC Message received. Address: " + address + ", Value: " + receivedValue);
 
-                        // Process the received OSC message
-                        ProcessOSCMessage(address, receivedValue);
-                    }
+                    // Process the received OSC message
+                    ProcessOSCMessage(address, receivedValue);
                 }
             }
-        }).Start();
+        });
+
+        listenerThread.Start(); // Start the thread
     }
 
     // Custom method to handle OSC messages
@@ -55,10 +59,22 @@ public class OSCReceiver : MonoBehaviour
     // Clean up the listener
     private void OnDestroy()
     {
-        if (listener != null)
+        // Stop listening and wait for the thread to finish
+        if (listenerThread != null && listenerThread.IsAlive)
         {
-            listener.Close();
-            Debug.Log("OSC Listener closed.");
+            // Set the flag to false to stop the thread loop
+            isListening = false;
+
+            // Close the UDPListener to stop receiving new messages
+            if (listener != null)
+            {
+                listener.Close();
+                Debug.Log("OSC Listener closed.");
+            }
+
+            // Wait for the thread to exit
+            listenerThread.Join();
+            Debug.Log("OSC Listener thread has been stopped.");
         }
     }
 }

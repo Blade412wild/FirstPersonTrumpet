@@ -2,10 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using SharpOSC;
+using TMPro;
 
 public class OSCManager : MonoBehaviour
 {
-    public OSCSender sender;
+    public TMP_InputField chatInput;
+
+    private OSCSender sender;
     private OSCReceiver listener;
 
 
@@ -26,7 +29,8 @@ public class OSCManager : MonoBehaviour
 
     public void SendMessage()
     {
-        sender.SendMessage("button/test", "hallo Nathan");
+        string value = chatInput.text;
+        sender.SendMessage("button/test", value);
     }
 
 
