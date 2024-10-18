@@ -16,12 +16,16 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        apple = new Apple(100);
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            apple.TakeABite();
+        }
     }
 
     private void CheckGameState()

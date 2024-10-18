@@ -5,7 +5,7 @@ using SharpOSC;
 
 public class OSCManager : MonoBehaviour
 {
-    private OSCSender sender;
+    public OSCSender sender;
     private OSCReceiver listener;
 
 
@@ -17,8 +17,7 @@ public class OSCManager : MonoBehaviour
 
     public void CreateUDPSender()
     {
-        //sender = new OSCSender("127.0.0.1", 9000);
-
+        sender = new OSCSender("127.0.0.1", 9000);
     }
 
     public void CreateUDPListener()
@@ -33,12 +32,20 @@ public class OSCManager : MonoBehaviour
 
     private void DestroyUDPSender()
     {
-
+        sender.CloseSender();
+        sender = null;
+        
     }
 
     private void DestroyUDPListener()
     {
 
+    }
+
+    private void OnDestroy()
+    {
+        DestroyUDPSender();
+        DestroyUDPListener();
     }
 
 

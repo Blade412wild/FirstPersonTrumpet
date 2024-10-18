@@ -4,10 +4,10 @@ public class Apple
 {
     private int health;
 
-    //public Apple(int health)
-    //{
-    //    this.health = health;
-    //}
+    public Apple(int health)
+    {
+        this.health = health;
+    }
 
     public void TakeABite()
     {

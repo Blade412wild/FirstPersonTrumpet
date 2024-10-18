@@ -16,7 +16,7 @@ public class OSCSender
         this.port = port;
 
         Debug.Log(ipAddress + port);
-        //CreateUDPSender();
+        CreateUDPSender();
     }
     private void CreateUDPSender()
     {
@@ -29,5 +29,11 @@ public class OSCSender
         var message = new OscMessage(address, messageContent);
         sender.Send(message);
         Debug.Log("OSC Message sent to " + address + ": " + messageContent);
+    }
+
+    public void CloseSender()
+    {
+        sender.Close();
+        Debug.Log("closed Sender");
     }
 }
