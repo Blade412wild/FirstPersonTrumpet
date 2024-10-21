@@ -17,10 +17,17 @@ public class OSCManager : MonoBehaviour
     public TMP_InputField chatInput;
     public TMP_InputField chatIncomingData;
 
+    [Header("UI Status")]
+    public UIStatusBlock ListenerUIStatus;
+    public UIStatusBlock SenderUIStatus;
+
     private OSCSender sender;
     private OSCReceiver listener;
 
     private string incommingData;
+
+
+
 
     private void Update()
     {
@@ -34,6 +41,7 @@ public class OSCManager : MonoBehaviour
         int targetPort = Convert.ToInt32(TargetPortField.text); 
 
         sender = new OSCSender(targetIP, targetPort);
+        SenderUIStatus.ChangeColor(true);
     }
 
     public void CreateUDPListener()
@@ -50,6 +58,7 @@ public class OSCManager : MonoBehaviour
         {
             listener.OndataReceived += CheckIncomingMessage;
         }
+        ListenerUIStatus.ChangeColor(true);
     }
 
     public void SendMessage()
@@ -82,6 +91,18 @@ public class OSCManager : MonoBehaviour
     {
         listener.CloseListener();
         listener = null;
+    }
+
+    public void ResetSender()
+    {
+        DestroyUDPSender();
+        SenderUIStatus.ChangeColor(false);
+    }
+
+    public void ResetListener()
+    {
+        DestroyUDPListener();
+        ListenerUIStatus.ChangeColor(false);
     }
 
     private void OnDestroy()
