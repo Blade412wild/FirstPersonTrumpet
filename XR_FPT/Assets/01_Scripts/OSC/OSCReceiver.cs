@@ -1,25 +1,34 @@
 using UnityEngine;
 using SharpOSC;
 using System.Threading; // For threading
+using System;
 
-public class OSCReceiver : MonoBehaviour
+public class OSCReceiver
 {
+    public Action<string> OndataReceived;
+
     private UDPListener listener;
-    public int port = 9000; // Listening port
+    private int port; // Listening port
     private Thread listenerThread; // The background thread for listening
     private bool isListening = false; // Flag to control thread execution
+    public string incommingData;
 
-    void Start()
+
+    public OSCReceiver(int port)
     {
-        listener = new UDPListener(port);
-        Debug.Log("OSC Receiver initialized on Port: " + port);
-
-        // Start receiving OSC messages asynchronously
+        this.port = port;
+        CreateUDPListener();
         StartListening();
     }
 
+    private void CreateUDPListener()
+    {
+        listener = new UDPListener(port);
+        Debug.Log("OSC Receiver initialized on Port: " + port);
+    }
+
     // This method listens for incoming OSC messages
-    private void StartListening()
+    public void StartListening()
     {
         isListening = true; // Set the flag to true when starting
 
@@ -34,7 +43,8 @@ public class OSCReceiver : MonoBehaviour
                     // Extract the OSC message data and handle it
                     string address = message.Address;
                     string receivedValue = message.Arguments[0].ToString();
-                    Debug.Log("OSC Message received. Address: " + address + ", Value: " + receivedValue);
+                    //incommingData = message.Arguments[0].ToString();
+                    //Debug.Log("OSC Message received. Address: " + address + ", Value: " + receivedValue);
 
                     // Process the received OSC message
                     ProcessOSCMessage(address, receivedValue);
@@ -49,15 +59,14 @@ public class OSCReceiver : MonoBehaviour
     private void ProcessOSCMessage(string address, string value)
     {
         // Example: If the message address is "/example", trigger an event in Unity
-        if (address == "127.0.0.1")
-        {
-            Debug.Log("Processing OSC message with value: " + value);
-            // Perform actions in Unity based on OSC message
-        }
+
+        Debug.Log("Processing OSC message with value: " + value);
+        OndataReceived?.Invoke(value);
+        // Perform actions in Unity based on OSC message
+
     }
 
-    // Clean up the listener
-    private void OnDestroy()
+    public void CloseListener()
     {
         // Stop listening and wait for the thread to finish
         if (listenerThread != null && listenerThread.IsAlive)

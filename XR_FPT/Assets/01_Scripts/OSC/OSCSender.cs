@@ -8,8 +8,6 @@ public class OSCSender
     private UDPSender sender;
     private string ipAddress;
     private int port;
-
-
     public OSCSender(string ipAddress, int port)
     {
         this.ipAddress = ipAddress;
