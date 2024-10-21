@@ -95,12 +95,14 @@ public class OSCManager : MonoBehaviour
 
     public void ResetSender()
     {
+        if (sender == null) return;
         DestroyUDPSender();
         SenderUIStatus.ChangeColor(false);
     }
 
     public void ResetListener()
     {
+        if (listener == null) return;
         DestroyUDPListener();
         ListenerUIStatus.ChangeColor(false);
     }
